@@ -30,3 +30,19 @@ docker compose exec backend pip install -r requirements.txt
 ```
 
 En caso de tener algun error de sintaxis, instalarlo en local
+
+```
+# 1. Instalar dependencias de frontend
+cd frontend
+npm install
+cd ..
+
+# 2. Instalar dependencias de backend (Python)
+cd backend
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+
+# 3. Migrar la base de datos de Django
+python manage.py migrate
+cd ..
+```
