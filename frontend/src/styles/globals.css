@@ -1,0 +1,42 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @import "tailwindcss";  */
+
+/* Importa tus fuentes de Google Fonts (asegúrate de que los nombres coincidan con fontFamily en tailwind.config.ts) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&family=Bebas+Neue&display=swap');
+/*
+  Añadí Montserrat 400 (regular) por si lo necesitas.
+  Bebas Neue está importada por si la usas con 'font-bauhaus'.
+*/
+
+body {
+  /* Aplicamos tus colores de marca y la fuente base del cuerpo */
+  @apply bg-brand-white text-brand-black font-sans antialiased overflow-x-hidden;
+  /* `font-sans` ahora usará 'Open Sans' según tu config */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* Aplicamos la fuente para encabezados */
+  @apply font-heading text-brand-white; /* `font-heading` usará 'Montserrat' */
+  /* Hice los encabezados rojos para que se destaquen en la prueba */
+}
+
+/* Clase de prueba para elementos con fondo rojo y texto blanco */
+.test-red-card {
+  @apply bg-brand-red text-brand-white p-4 rounded-md;
+}
+
+/* Clase de prueba para fuente Bauhaus si la configuras */
+/* .test-bauhaus-text {
+  @apply font-bauhaus text-4xl;
+} */
+
+/* Puedes mantener tus otras clases como .glassmorphic-card si quieres probarlas ya */
+.glassmorphic-card {
+  /* Ejemplo de glassmorfismo con tus colores */
+  @apply bg-brand-white/5 backdrop-blur-lg rounded-xl border border-brand-white/10 shadow-lg p-6;
+  /* Ajusta bg-brand-white/5 o bg-brand-black/10 según la oscuridad del efecto glass */
+}

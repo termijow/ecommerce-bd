@@ -1,0 +1,70 @@
+services:
+  # Servicio de Base de Datos PostgreSQL (SIN CAMBIOS)
+  db:
+    image: postgres:15-alpine
+    container_name: ecommerce_bd_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ecommerce_bd_user
+      POSTGRES_PASSWORD: ecommerce_bd_password
+      POSTGRES_DB: ecommerce_bd_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # networks:
+    #   - ecommerce_bd_network
+
+  # Servicio Frontend (Next.js) (SIN CAMBIOS SIGNIFICATIVOS, solo eliminé un comentario y revisé env var)
+# frontend/docker-compose.yml (o parte del principal)
+  frontend:
+    container_name: ecommerce_bd_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules # Correcto para desarrollo
+    depends_on:
+      - backend
+    # environment:
+    #   NEXT_PUBLIC_API_URL: http://backend:8000/api 
+      # CHOKIDAR_USEPOLLING: "true" # Solo si es necesario
+    # command: npm run start # CAMBIAR ESTO
+    command: npm run dev    # A ESTO para desarrollo
+    restart: unless-stopped
+
+  # Servicio Backend (Django) (MODIFICADO)
+  backend:
+    container_name: ecommerce_bd_backend
+    build:
+      context: ./backend # Directorio donde se encuentra el Dockerfile y el código del backend
+      dockerfile: Dockerfile # Nombre del Dockerfile para Django
+    ports:
+      - "8000:8000" # Mapea el puerto 8000 del host al 8000 del contenedor (puerto estándar de Django dev server)
+    volumes:
+      - ./backend:/usr/src/app # Mapea el código fuente local al contenedor para hot-reloading
+    depends_on:
+      - db # El backend depende de que la base de datos esté lista
+    environment:
+      DATABASE_URL: "postgresql://ecommerce_bd_user:ecommerce_bd_password@db:5432/ecommerce_bd_dev"
+      DJANGO_SETTINGS_MODULE: "core.settings" # Reemplaza 'core' con el nombre de tu proyecto Django
+      SECRET_KEY: "tu_django_secret_key_aqui_cambiala_por_algo_seguro" # CAMBIA ESTO
+      DEBUG: "True" # Para desarrollo
+      PYTHONUNBUFFERED: "1" # Para que los logs de Python aparezcan inmediatamente en la consola de Docker
+      PORT: 8000 # Puerto en el que escuchará Django dentro del contenedor
+    # El comando para desarrollo se manejará en el Dockerfile de desarrollo,
+    # pero podríamos especificarlo aquí también si quisiéramos sobreescribir el CMD del Dockerfile.
+    # command: python manage.py runserver 0.0.0.0:8000
+    restart: unless-stopped
+    # networks:
+    #   - ecommerce_bd_network
+
+volumes:
+  pgdata:
+
+# networks:
+#   ecommerce_bd_network:
+#     driver: bridge
