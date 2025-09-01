@@ -4,7 +4,6 @@ Para correr los contenedores de docker, hay que usar los siguientes comandos:
 
 Para montarlo (solo se ejecuta una vez)
 
-
 ```
 docker compose up --build
 ```
