@@ -45,3 +45,9 @@ python -m pip install -r requirements.txt
 python manage.py migrate
 cd ..
 ```
+
+## Para ejecutar el archivo de postgres.sql
+
+```bash
+docker exec -i ecommerce_bd_db psql -U ecommerce_bd_user -d ecommerce_bd_dev < postgres.sql
+```

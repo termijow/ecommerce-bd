@@ -1,14 +1,17 @@
 # backend/quicknotes/urls.py
-from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import NoteViewSet # Importa tu ViewSet
+from .views import (
+    UsuarioViewSet, ClienteViewSet, ProductoViewSet, PedidoViewSet,
+    DetallePedidoViewSet, DevolucionViewSet
+)
 
-# Crea un router y registra nuestro ViewSet con él.
 router = DefaultRouter()
-# 'notes' será el prefijo para las URLs de este ViewSet (ej: /api/quicknotes/notes/)
-router.register(r'notes', NoteViewSet, basename='note')
+router.register(r'usuarios', UsuarioViewSet)
+router.register(r'clientes', ClienteViewSet)
+router.register(r'productos', ProductoViewSet)
+router.register(r'pedidos', PedidoViewSet)
+router.register(r'detalle-pedidos', DetallePedidoViewSet)
+router.register(r'devoluciones', DevolucionViewSet)
 
-# Las URLs de la API son ahora determinadas automáticamente por el router.
-urlpatterns = [
-    path('', include(router.urls)),
-]
+# Las URLs generadas por el router
+urlpatterns = router.urls

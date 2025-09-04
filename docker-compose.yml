@@ -57,7 +57,7 @@ services:
       PORT: 8000 # Puerto en el que escuchará Django dentro del contenedor
     # El comando para desarrollo se manejará en el Dockerfile de desarrollo,
     # pero podríamos especificarlo aquí también si quisiéramos sobreescribir el CMD del Dockerfile.
-    # command: python manage.py runserver 0.0.0.0:8000
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     restart: unless-stopped
     # networks:
     #   - ecommerce_bd_network
