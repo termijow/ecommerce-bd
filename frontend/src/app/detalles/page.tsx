@@ -56,10 +56,10 @@ export default function DetallesPedidosPage() {
         fetch(API_DETALLES).then((r) => r.json()).then(setDetalles);
       } else {
         const errData = await res.json().catch(() => ({}));
-        setMensaje('❌ Error: ' + JSON.stringify(errData));
+        setMensaje('Error: ' + JSON.stringify(errData));
       }
     } catch (err: any) {
-      setMensaje('❌ Error de red: ' + err.message);
+      setMensaje('Error de red: ' + err.message);
     }
   };
 

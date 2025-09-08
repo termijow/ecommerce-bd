@@ -71,7 +71,7 @@ export default function PedidosPage() {
     e.preventDefault();
 
     if (carrito.length === 0) {
-      setMensaje('❌ Debes agregar al menos un producto');
+      setMensaje(' Debes agregar al menos un producto');
       return;
     }
 
@@ -80,8 +80,8 @@ export default function PedidosPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          cliente: 1, // 👈 se envía como id numérico fijo (para probar)
-          fecha: new Date(fecha).toISOString().split('T')[0], // 👈 YYYY-MM-DD
+          cliente: 1, //  se envía como id numérico fijo (para probar)
+          fecha: new Date(fecha).toISOString().split('T')[0], // YYYY-MM-DD
           total,
           detalles: carrito.map((item) => ({
             producto: item.producto,
@@ -91,7 +91,7 @@ export default function PedidosPage() {
       });
 
       if (res.ok) {
-        setMensaje('✅ Pedido creado con éxito');
+        setMensaje(' Pedido creado con éxito');
         setFecha('');
         setCarrito([]);
         fetch(API_PEDIDOS).then((r) => r.json()).then(setPedidos);
@@ -99,12 +99,12 @@ export default function PedidosPage() {
         const errorData = await res.json().catch(() => ({}));
         console.error('Error del backend:', errorData);
         setMensaje(
-          '❌ Error al crear el pedido: ' + JSON.stringify(errorData)
+          ' Error al crear el pedido: ' + JSON.stringify(errorData)
         );
       }
     } catch (err) {
       console.error('Error al conectar con la API:', err);
-      setMensaje('❌ Error de conexión con la API');
+      setMensaje(' Error de conexión con la API');
     }
   };
 
