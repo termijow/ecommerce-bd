@@ -7,6 +7,7 @@ const API_CLIENTES = 'http://localhost:8000/api/clientes/';
 interface Cliente {
   id: number;
   nombre: string;
+  apellido: string;
   correo: string;
   telefono: string;
   direccion: string;
@@ -19,6 +20,7 @@ export default function ClientesPage() {
 
   // Estados formulario
   const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
@@ -57,12 +59,13 @@ export default function ClientesPage() {
       const res = await fetch(API_CLIENTES, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, correo, telefono, direccion }),
+        body: JSON.stringify({ nombre, apellido, correo, telefono, direccion }),
       });
 
       if (!res.ok) throw new Error(`Error al crear cliente. Estado: ${res.status}`);
 
       setNombre('');
+      setApellido('');
       setCorreo('');
       setTelefono('');
       setDireccion('');
@@ -88,6 +91,13 @@ export default function ClientesPage() {
             placeholder="Nombre"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
+            className="w-full border p-2 rounded"
+            required
+          />
+          <input type="text"
+            placeholder="Apellido"
+            value={apellido}
+            onChange={(e)=> setApellido(e.target.value)}
             className="w-full border p-2 rounded"
             required
           />
@@ -135,6 +145,7 @@ export default function ClientesPage() {
           <tr>
             <th className="p-2 border">ID</th>
             <th className="p-2 border">Nombre</th>
+            <th className="p-2 border">Apellido</th>
             <th className="p-2 border">Correo</th>
             <th className="p-2 border">Teléfono</th>
             <th className="p-2 border">Dirección</th>
@@ -146,6 +157,7 @@ export default function ClientesPage() {
               <tr key={c.id}>
                 <td className="border p-2">{c.id}</td>
                 <td className="border p-2">{c.nombre}</td>
+                <td className="border p-2">{c.apellido}</td>
                 <td className="border p-2">{c.correo}</td>
                 <td className="border p-2">{c.telefono}</td>
                 <td className="border p-2">{c.direccion}</td>
