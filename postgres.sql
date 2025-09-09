@@ -88,7 +88,7 @@ DECLARE
     v_subtotal DECIMAL(10, 2);
 BEGIN
     INSERT INTO pedidos (cliente_id, estado, total)
-    VALUES (p_cliente_id, p_estado, 0) -- El total se actualizará al final
+    VALUES (p_cliente_id, p_estado, 0)
     RETURNING id INTO v_pedido_id;
 
     FOR i IN 1 .. array_length(p_productos_ids, 1) LOOP
@@ -114,3 +114,28 @@ EXCEPTION
         RAISE;
 END;
 $$;
+CREATE OR REPLACE FUNCTION fn_actualizar_stock_al_vender()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE productos
+    SET stock = stock - NEW.cantidad
+    WHERE id = NEW.producto_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER actualizar_stock
+AFTER INSERT ON detalle_pedidos
+FOR EACH ROW EXECUTE FUNCTION fn_actualizar_stock_al_vender();
+
+
+
+CALL registrar_pedido(
+    1,
+    'pendiente',
+    ARRAY[1, 2],
+    ARRAY[2, 1],
+    ARRAY[500.00, 300.00]
+);

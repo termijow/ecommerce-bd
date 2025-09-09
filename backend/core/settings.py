@@ -118,3 +118,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+AUTHENTICATION_BACKENDS = [
+    'quicknotes.authentication.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

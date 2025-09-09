@@ -2,6 +2,8 @@ from rest_framework import viewsets, status, generics, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import connection
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyTokenObtainPairSerializer
 
 from .models import Usuario, Cliente, Producto, Pedido, DetallePedido, Devolucion
 from .serializers import (
@@ -118,4 +120,9 @@ class DevolucionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     # Aquí también podrías añadir lógica en get_queryset para que los clientes
-    # solo vean sus propias devoluciones.
+    # solo vean sus propias devoluciones
+class MyTokenObtainPairView(TokenObtainPairView):
+    """
+    Vista de obtención de token personalizada que utiliza nuestro serializador con mensajes en español.
+    """
+    serializer_class = MyTokenObtainPairSerializer
