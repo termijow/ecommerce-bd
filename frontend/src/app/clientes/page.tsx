@@ -2,13 +2,16 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 
+// --- ¡LA CORRECCIÓN CLAVE ESTÁ AQUÍ! ---
+// Nos aseguramos de que la URL completa, incluyendo /api/, esté correcta.
 const API_CLIENTES = 'http://localhost:8000/api/clientes/';
 
+// La interfaz debe coincidir con el modelo de Django
 interface Cliente {
   id: number;
   nombre: string;
   apellido: string;
-  correo: string;
+  email: string;
   telefono: string;
   direccion: string;
 }
@@ -18,10 +21,10 @@ export default function ClientesPage() {
   const [loading, setLoading] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
 
-  // Estados formulario
+  // Estados del formulario
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
-  const [correo, setCorreo] = useState('');
+  const [email, setEmail] = useState('');
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
 
@@ -33,8 +36,12 @@ export default function ClientesPage() {
   const fetchClientes = async () => {
     try {
       setLoading(true);
+      setListError(null); // Limpiar errores previos
       const res = await fetch(API_CLIENTES);
-      if (!res.ok) throw new Error(`Error al listar clientes. Estado: ${res.status}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(`Error al listar clientes. Estado: ${res.status}. Detalles: ${JSON.stringify(errorData)}`);
+      }
       const data: Cliente[] = await res.json();
       setClientes(data);
     } catch (err: any) {
@@ -59,18 +66,25 @@ export default function ClientesPage() {
       const res = await fetch(API_CLIENTES, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, apellido, correo, telefono, direccion }),
+        body: JSON.stringify({ nombre, apellido, email, telefono, direccion }),
       });
 
-      if (!res.ok) throw new Error(`Error al crear cliente. Estado: ${res.status}`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ detail: 'Error desconocido del servidor.' }));
+        const errorMessage = Object.entries(errorData)
+          .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+          .join('; ');
+        throw new Error(`Error al crear cliente: ${errorMessage}`);
+      }
 
+      // Limpiar el formulario
       setNombre('');
       setApellido('');
-      setCorreo('');
+      setEmail('');
       setTelefono('');
       setDireccion('');
       setSuccessMessage('Cliente creado exitosamente');
-      await fetchClientes();
+      await fetchClientes(); // Actualizar la lista
     } catch (err: any) {
       setFormError(err.message);
     } finally {
@@ -103,9 +117,9 @@ export default function ClientesPage() {
           />
           <input
             type="email"
-            placeholder="Correo"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full border p-2 rounded"
             required
           />
@@ -126,7 +140,7 @@ export default function ClientesPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
           >
             {isSubmitting ? 'Creando...' : 'Crear Cliente'}
           </button>
@@ -146,7 +160,7 @@ export default function ClientesPage() {
             <th className="p-2 border">ID</th>
             <th className="p-2 border">Nombre</th>
             <th className="p-2 border">Apellido</th>
-            <th className="p-2 border">Correo</th>
+            <th className="p-2 border">Email</th>
             <th className="p-2 border">Teléfono</th>
             <th className="p-2 border">Dirección</th>
           </tr>
@@ -158,13 +172,13 @@ export default function ClientesPage() {
                 <td className="border p-2">{c.id}</td>
                 <td className="border p-2">{c.nombre}</td>
                 <td className="border p-2">{c.apellido}</td>
-                <td className="border p-2">{c.correo}</td>
+                <td className="border p-2">{c.email}</td>
                 <td className="border p-2">{c.telefono}</td>
                 <td className="border p-2">{c.direccion}</td>
               </tr>
             ))
           ) : (
-            !loading && <tr><td colSpan={5} className="p-4 text-center">No hay clientes registrados</td></tr>
+            !loading && <tr><td colSpan={6} className="p-4 text-center">No hay clientes registrados</td></tr>
           )}
         </tbody>
       </table>

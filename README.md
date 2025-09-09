@@ -30,7 +30,7 @@ docker compose exec backend pip install -r requirements.txt
 
 En caso de tener algun error de sintaxis, instalarlo en local
 
-```
+```bash
 # 1. Instalar dependencias de frontend
 cd frontend
 npm install
@@ -45,7 +45,9 @@ python -m pip install -r requirements.txt
 python manage.py migrate
 cd ..
 ```
-
+```bash
+source .venv/bin/activate
+```
 ## Para ejecutar el archivo de postgres.sql
 
 ```bash

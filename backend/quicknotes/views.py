@@ -3,6 +3,8 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action # Para crear acciones personalizadas en ViewSets
 from rest_framework.response import Response
 from django.db import connection, transaction # Para interactuar con la DB directamente y transacciones
+from .serializers import UsuarioRegisterSerializer
+from rest_framework import generics, permissions
 
 from .models import Usuario, Cliente, Producto, Pedido, DetallePedido, Devolucion
 from .serializers import (
@@ -31,6 +33,11 @@ class ProductoViewSet(viewsets.ModelViewSet):
 class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all().order_by('-fecha_pedido')
     serializer_class = PedidoSerializer
+
+class UsuarioRegisterView(generics.CreateAPIView):
+    queryset = Usuario.objects.all()
+    permission_classes = (permissions.AllowAny,) # Permite a cualquiera registrarse
+    serializer_class = UsuarioRegisterSerializer
 
     # Acción personalizada para registrar un pedido usando el PROCEDURE de PostgreSQL
     @action(detail=False, methods=['post'], url_path='registrar-nuevo-pedido')
