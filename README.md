@@ -30,7 +30,7 @@ docker compose exec backend pip install -r requirements.txt
 
 En caso de tener algun error de sintaxis, instalarlo en local
 
-```
+```bash
 # 1. Instalar dependencias de frontend
 cd frontend
 npm install
@@ -45,14 +45,18 @@ python -m pip install -r requirements.txt
 python manage.py migrate
 cd ..
 ```
-
+```bash
+source .venv/bin/activate
+```
 ## Para ejecutar el archivo de postgres.sql
 
 ```bash
 docker exec -i ecommerce_bd_db psql -U ecommerce_bd_user -d ecommerce_bd_dev < postgres.sql
 sudo docker compose exec backend python manage.py createsuperuser
 ```
-
+```bash
+psql -h localhost -d ecommerce_bd_dev -U ecommerce_user -f /postgres.sql
+```
 ## Roadmap del Proyecto
 Fase 0: Configuración del Entorno de Desarrollo (¡Completada!)
 Objetivo: Establecer una base de desarrollo robusta y reproducible.

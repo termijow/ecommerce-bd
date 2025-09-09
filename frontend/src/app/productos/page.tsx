@@ -4,7 +4,6 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 
-// Interfaz para los datos del Producto
 interface Producto {
   id: number;
   nombre: string;
