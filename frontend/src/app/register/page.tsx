@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const API_REGISTER_URL = 'http://localhost:8000/api/register/';
 
@@ -20,7 +21,7 @@ export default function RegisterPage() {
     setError(null);
 
     if (password !== password2) {
-      setError('Las contraseñas no coinciden.');
+      setError('Passwords do not match.');
       setIsSubmitting(false);
       return;
     }
@@ -40,11 +41,13 @@ export default function RegisterPage() {
         throw new Error(errorMessage);
       }
 
-      // Redirigir al login después de un registro exitoso
+      // Redirect to the login page after successful registration
+      alert('Registration successful! Please log in.');
       router.push('/login');
 
-    } catch (err: any) {
-      setError(err.message || 'Ocurrió un error durante el registro.');
+    } catch (err: any)
+       {
+      setError(err.message || 'An error occurred during registration.');
     } finally {
       setIsSubmitting(false);
     }
@@ -53,11 +56,11 @@ export default function RegisterPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">Registro de Usuario</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Register User Account</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            placeholder="Nombre de Usuario"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full border p-2 rounded"
@@ -73,7 +76,7 @@ export default function RegisterPage() {
           />
           <input
             type="password"
-            placeholder="Contraseña"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border p-2 rounded"
@@ -81,7 +84,7 @@ export default function RegisterPage() {
           />
           <input
             type="password"
-            placeholder="Confirmar Contraseña"
+            placeholder="Confirm Password"
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
             className="w-full border p-2 rounded"
@@ -92,10 +95,16 @@ export default function RegisterPage() {
             disabled={isSubmitting}
             className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
           >
-            {isSubmitting ? 'Registrando...' : 'Registrar'}
+            {isSubmitting ? 'Registering...' : 'Register'}
           </button>
         </form>
         {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
+        <p className="mt-4 text-center">
+          Already have an account?{' '}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Login here
+          </Link>
+        </p>
       </div>
     </div>
   );
