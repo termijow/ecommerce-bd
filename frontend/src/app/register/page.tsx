@@ -41,7 +41,6 @@ export default function RegisterPage() {
         throw new Error(errorMessage);
       }
 
-      // Redirect to the login page after successful registration
       alert('Registration successful! Please log in.');
       router.push('/login');
 
@@ -56,11 +55,11 @@ export default function RegisterPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">Register User Account</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-black">Registrate</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full border p-2 rounded"
@@ -76,7 +75,7 @@ export default function RegisterPage() {
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border p-2 rounded"
@@ -84,7 +83,7 @@ export default function RegisterPage() {
           />
           <input
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirmar contraseña"
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
             className="w-full border p-2 rounded"
@@ -95,14 +94,14 @@ export default function RegisterPage() {
             disabled={isSubmitting}
             className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
           >
-            {isSubmitting ? 'Registering...' : 'Register'}
+            {isSubmitting ? 'Registrando...' : 'Register'}
           </button>
         </form>
         {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
         <p className="mt-4 text-center">
-          Already have an account?{' '}
+          Ya tienes una cuenta?{' '}
           <Link href="/login" className="text-blue-600 hover:underline">
-            Login here
+            Iniciar sesión
           </Link>
         </p>
       </div>

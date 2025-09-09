@@ -18,14 +18,12 @@ export default function DetallesPedidosPage() {
 
   const [mensaje, setMensaje] = useState<string | null>(null);
 
-  // Cargar pedidos, productos y detalles
   useEffect(() => {
     fetch(API_PEDIDOS).then((r) => r.json()).then(setPedidos);
     fetch(API_PRODUCTOS).then((r) => r.json()).then(setProductos);
     fetch(API_DETALLES).then((r) => r.json()).then(setDetalles);
   }, []);
 
-  // Cuando cambie producto → actualizar precio unitario
   useEffect(() => {
     const p = productos.find((prod) => prod.id == productoId);
     if (p) setPrecioUnitario(Number(p.precio));
@@ -65,11 +63,10 @@ export default function DetallesPedidosPage() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Gestión de Detalles de Pedido</h1>
+      <h1 className="text-3xl font-bold mb-6 text-black">Gestión de Detalles de Pedido</h1>
 
-      {/* Formulario */}
       <form onSubmit={crearDetalle} className="mb-8 bg-white p-6 rounded shadow">
-        <h2 className="text-xl font-semibold mb-4">Agregar Detalle</h2>
+        <h2 className="text-xl font-semibold mb-4 text-black">Agregar Detalle</h2>
 
         <label className="block mb-2">Pedido</label>
         <select

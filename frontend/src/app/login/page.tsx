@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 const API_LOGIN_URL = 'http://localhost:8000/api/token/';
 
 export default function LoginPage() {
-  // --- CRITICAL CHANGE: State variable must be 'username' ---
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -22,23 +21,18 @@ export default function LoginPage() {
       const res = await fetch(API_LOGIN_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // --- CRITICAL CHANGE: The request body must send 'username' ---
         body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        // simple-jwt error messages are in the 'detail' field
         throw new Error(data.detail || 'Incorrect credentials or inactive account.');
       }
-
-      // Store tokens in localStorage for future API requests
       localStorage.setItem('accessToken', data.access);
       localStorage.setItem('refreshToken', data.refresh);
 
-      // Redirect to a protected page or the homepage
-      router.push('/clientes'); // Redirecting to clients page after successful login
+      router.push('/clientes');
 
     } catch (err: any) {
       setError(err.message);
@@ -50,11 +44,11 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-black">Iniciar Sesion</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            placeholder="Username" // This is what the user sees
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full border p-2 rounded"

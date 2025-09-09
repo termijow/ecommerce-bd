@@ -117,7 +117,7 @@ export default function PedidosPage() {
         onSubmit={crearPedido}
         className="mb-8 p-6 bg-white shadow rounded"
       >
-        <h2 className="text-2xl font-semibold mb-4">Nuevo Pedido</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-black">Nuevo Pedido</h2>
 
         <label className="block mb-2">Fecha</label>
         <input

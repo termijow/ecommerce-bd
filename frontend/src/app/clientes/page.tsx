@@ -94,11 +94,11 @@ export default function ClientesPage() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-8 text-center">Gestión de Clientes</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center text-black">Gestión de Clientes</h1>
 
       {/* Formulario */}
       <div className="mb-12 p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold mb-4">Registrar Cliente</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-black">Registrar Cliente</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
