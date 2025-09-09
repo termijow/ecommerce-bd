@@ -3,11 +3,9 @@
 import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-const API_LOGIN_URL = 'http://localhost:8000/api/token/';
+import { apiUrls } from '@/lib/api'; // <-- Importamos nuestras URLs centralizadas
 
 export default function LoginPage() {
-  // Ahora solo manejamos 'username', para que no haya confusión.
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -19,27 +17,28 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setError(null);
 
-    const payload = { username, password };
-    console.log("Enviando al backend:", JSON.stringify(payload));
-
     try {
-      const res = await fetch(API_LOGIN_URL, {
+      const res = await fetch(apiUrls.login, { // <-- Usamos la URL centralizada
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // Enviamos explícitamente el campo 'username'.
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        // Usamos el mensaje de error en español que configuramos.
-        throw new Error(data.detail || 'Credenciales incorrectas.');
+        throw new Error(data.message || 'Credenciales incorrectas.');
       }
 
-      localStorage.setItem('accessToken', data.access);
-      localStorage.setItem('refreshToken', data.refresh);
+      // --- ¡AQUÍ ESTÁ LA PRUEBA QUE QUERÍAS! ---
+      // Imprimimos el token en la consola del navegador para verificar.
+      console.log('¡Inicio de sesión exitoso! Access Token:', data.token);
+      // ------------------------------------------
 
+      // Guardamos el token en localStorage para usarlo en otras páginas.
+      localStorage.setItem('accessToken', data.token);
+
+      // Redirigimos al usuario a la página de clientes.
       router.push('/clientes');
 
     } catch (err: any) {
@@ -49,6 +48,7 @@ export default function LoginPage() {
     }
   };
 
+  // El resto del componente JSX se mantiene igual
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-md">
@@ -67,7 +67,6 @@ export default function LoginPage() {
               onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-gray-300 p-2 rounded focus:ring-blue-500 focus:border-blue-500"
               required
-              autoComplete="username"
             />
           </div>
           <div>
@@ -81,7 +80,6 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-gray-300 p-2 rounded focus:ring-blue-500 focus:border-blue-500"
               required
-              autoComplete="current-password"
             />
           </div>
           <button

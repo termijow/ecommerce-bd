@@ -4,7 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const API_REGISTER_URL = 'http://localhost:8000/api/register/';
+const API_REGISTER_URL = 'http://localhost:3000/api/register/';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');

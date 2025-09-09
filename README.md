@@ -54,7 +54,9 @@ source .venv/bin/activate
 docker exec -i ecommerce_bd_db psql -U ecommerce_bd_user -d ecommerce_bd_dev < postgres.sql
 sudo docker compose exec backend python manage.py createsuperuser
 ```
-
+```bash
+psql -h localhost -d ecommerce_bd_dev -U ecommerce_user -f /postgres.sql
+```
 ## Roadmap del Proyecto
 Fase 0: Configuración del Entorno de Desarrollo (¡Completada!)
 Objetivo: Establecer una base de desarrollo robusta y reproducible.

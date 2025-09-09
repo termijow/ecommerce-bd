@@ -2,8 +2,8 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-
-const API_CLIENTES = 'http://localhost:8000/api/clientes/';
+// --- ¡PASO 1: Importar la configuración centralizada! ---
+import { apiUrls, getAuthHeaders } from '@/lib/api';
 
 interface Cliente {
   id: number;
@@ -17,43 +17,34 @@ interface Cliente {
 export default function ClientesPage() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
-  // --- ÚNICA VARIABLE PARA TODOS LOS ERRORES ---
-  const [error, setError] = useState<string | null>(null); 
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Estados del formulario
+  // Estados del formulario (se mantienen igual)
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const getAuthHeaders = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (!token) {
-      router.push('/login');
-      return null;
-    }
-    return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
-  };
-
+  // --- PASO 2: Usar la nueva lógica para obtener los clientes ---
   const fetchClientes = async () => {
     setLoading(true);
     setError(null);
-    const headers = getAuthHeaders();
+
+    const headers = getAuthHeaders(); // Usamos la función centralizada
     if (!headers) {
-        setLoading(false);
-        return;
+      // Si no hay token, la función getAuthHeaders ya redirige al login
+      setError("Debes iniciar sesión para ver esta página.");
+      setLoading(false);
+      return;
     }
 
     try {
-      const res = await fetch(API_CLIENTES, { headers });
+      // Usamos la URL centralizada de apiUrls
+      const res = await fetch(apiUrls.clientes, { headers });
 
       if (res.status === 401) {
         throw new Error('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
@@ -78,20 +69,22 @@ export default function ClientesPage() {
     fetchClientes();
   }, []);
 
+  // --- PASO 3: Usar la nueva lógica para crear un cliente ---
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Usamos setError para el formulario también, no formError
-    setError(null); 
+    setError(null);
     setSuccessMessage(null);
-    const headers = getAuthHeaders();
+
+    const headers = getAuthHeaders(); // Usamos la función centralizada
     if (!headers) {
         setIsSubmitting(false);
         return;
     }
 
     try {
-      const res = await fetch(API_CLIENTES, {
+      // Usamos la URL centralizada de apiUrls
+      const res = await fetch(apiUrls.clientes, {
         method: 'POST',
         headers,
         body: JSON.stringify({ nombre, apellido, email, telefono, direccion }),
@@ -112,23 +105,25 @@ export default function ClientesPage() {
       setTelefono('');
       setDireccion('');
       setSuccessMessage('Cliente creado exitosamente');
-      await fetchClientes();
+      await fetchClientes(); // Recargar la lista
     } catch (err: any) {
-      // Usamos setError para el formulario también
-      setError(err.message); 
+      setError(err.message); // Usamos el estado de error unificado
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // --- El resto del componente se mantiene casi igual ---
+
   if (loading) {
     return (
-        <div className="container mx-auto p-8 text-center">
-            <h1 className="text-2xl">Cargando...</h1>
-        </div>
+      <div className="container mx-auto p-8 text-center">
+        <h1 className="text-2xl">Cargando clientes...</h1>
+      </div>
     );
   }
 
+  // Ahora el error se muestra de forma más prominente
   if (error) {
     return (
       <div className="container mx-auto p-8 text-center">
@@ -160,8 +155,8 @@ export default function ClientesPage() {
             {isSubmitting ? 'Creando...' : 'Crear Cliente'}
           </button>
         </form>
-        {/* Aquí también usamos 'error' en lugar de 'formError' */}
-        {error && <p className="mt-2 text-red-600">{error}</p>}
+        {/* Mostramos el error del formulario aquí también */}
+        {error && !successMessage && <p className="mt-2 text-red-600">{error}</p>}
         {successMessage && <p className="mt-2 text-green-600">{successMessage}</p>}
       </div>
 

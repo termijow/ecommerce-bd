@@ -1,17 +1,18 @@
-CREATE DATABASE ecommerce_bd_dev;
-CREATE USER ecommerce_user WITH PASSWORD 'mi_password_seguro';
-GRANT ALL PRIVILEGES ON DATABASE ecommerce_bd_dev TO ecommerce_user;
+-- Ejecutar esto una vez en psql como superusuario (postgres)
+-- CREATE DATABASE ecommerce_bd_dev;
+-- CREATE USER ecommerce_user WITH PASSWORD 'mi_password_seguro';
+-- GRANT ALL PRIVILEGES ON DATABASE ecommerce_bd_dev TO ecommerce_user;
 
-DROP TRIGGER IF EXISTS actualizar_stock ON detalle_pedidos;
-DROP FUNCTION IF EXISTS fn_actualizar_stock_al_vender();
-DROP PROCEDURE IF EXISTS registrar_pedido(INTEGER, VARCHAR, INTEGER[], INTEGER[], DECIMAL[]);
+-- DROP TRIGGER IF EXISTS actualizar_stock ON detalle_pedidos;
+-- DROP FUNCTION IF EXISTS fn_actualizar_stock_al_vender();
+-- DROP PROCEDURE IF EXISTS registrar_pedido(INTEGER, VARCHAR, INTEGER[], INTEGER[], DECIMAL[]);
 
-DROP TABLE IF EXISTS devoluciones;
-DROP TABLE IF EXISTS detalle_pedidos;
-DROP TABLE IF EXISTS pedidos;
-DROP TABLE IF EXISTS productos;
-DROP TABLE IF EXISTS clientes;
-DROP TABLE IF EXISTS usuarios;
+-- DROP TABLE IF EXISTS devoluciones;
+-- DROP TABLE IF EXISTS detalle_pedidos;
+-- DROP TABLE IF EXISTS pedidos;
+-- DROP TABLE IF EXISTS productos;
+-- DROP TABLE IF EXISTS clientes;
+-- DROP TABLE IF EXISTS usuarios;
 
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
@@ -140,22 +141,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-INSERT INTO usuarios (username, password, email, rol)
-VALUES ('juan', '123456', 'juan@example.com', 'cliente')
-RETURNING id;
-
--- Supongamos que devuelve id = 1
--- Insertar cliente vinculado al usuario
-INSERT INTO clientes (usuario_id, nombre, apellido, direccion, telefono, email)
-VALUES (1, 'Juan', 'Pérez', 'Calle Falsa 123', '555-1234', 'cliente@example.com')
-RETURNING id;
-
--- Supongamos que devuelve id = 1
--- Insertar productos para tener stock
-INSERT INTO productos (nombre, descripcion, precio, stock)
-VALUES ('Laptop', 'Laptop potente', 500.00, 10),
-       ('Mouse', 'Mouse gamer', 300.00, 5)
-RETURNING id;
 
 CREATE TRIGGER actualizar_stock
 AFTER INSERT ON detalle_pedidos
@@ -163,10 +148,10 @@ FOR EACH ROW EXECUTE FUNCTION fn_actualizar_stock_al_vender();
 
 
 
--- CALL registrar_pedido(
---     1,
---     'pendiente',
---     ARRAY[1, 2],
---     ARRAY[2, 1],
---     ARRAY[500.00, 300.00]
--- );
+CALL registrar_pedido(
+    1,
+    'pendiente',
+    ARRAY[1, 2],
+    ARRAY[2, 1],
+    ARRAY[500.00, 300.00]
+);
